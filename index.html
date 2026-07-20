@@ -4,7 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>양수민 — Producer Beyond the Frame</title>
-<meta name="description" content="이야기는 프레임에서 끝나지 않는다. VFX Producer 양수민">
+<meta name="description" content="이 화면이 켜지기까지, 그 모든 과정이 제 일입니다. VFX Producer 양수민">
+<meta property="og:title" content="양수민 — Producer Beyond the Frame">
+<meta property="og:description" content="이 화면이 켜지기까지, 그 모든 과정이 제 일입니다. VFX Producer 양수민">
+<meta property="og:image" content="assets/hero_poster.jpg">
+<meta property="og:type" content="website">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -92,9 +96,11 @@ a:hover{color:var(--amber-hi)}
 #hero{height:240vh}
 .hero-stage{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .hero-frame{
-  position:relative;width:min(56vw,860px);aspect-ratio:16/9;overflow:hidden;
-  box-shadow:0 0 0 1px rgba(228,164,74,.16),0 0 100px rgba(228,164,74,.09),0 40px 120px rgba(0,0,0,.65);
-  will-change:width;
+  position:relative;width:100vw;
+  height:calc(100vw / 2.39);max-height:100vh;
+  overflow:hidden;
+  box-shadow:0 0 120px rgba(228,164,74,.07);
+  will-change:height;
 }
 .hero-frame .slot,.hero-frame .slot .ph{position:absolute;inset:0}
 .hero-veil{position:absolute;inset:0;pointer-events:none;
@@ -117,8 +123,10 @@ a:hover{color:var(--amber-hi)}
 .hero-copy .credit{margin-top:34px}
 .scroll-hint{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);
   font-family:var(--mono);font-size:9.5px;letter-spacing:.4em;color:var(--faint);
-  animation:hint 2.8s ease-in-out infinite}
-@keyframes hint{0%,100%{opacity:.3}50%{opacity:.85}}
+  opacity:0;transition:opacity 1.4s var(--ease)}
+.scroll-hint.show{opacity:1;animation:hint 2.8s ease-in-out 1.4s infinite}
+@keyframes hint{0%,100%{opacity:1}50%{opacity:.35}}
+html.locked,html.locked body{overflow:hidden;height:100%}
 
 /* ==========================================================
    CHAPTER TITLE CARDS — letterboxed interstitials
@@ -275,6 +283,11 @@ a:hover{color:var(--amber-hi)}
 .c-client{font-weight:600}
 .c-role{color:var(--mute);font-size:13px}
 .c-year{font-family:var(--mono);font-size:11.5px;color:var(--faint);text-align:right}
+.x-row{
+  padding:15px 0;border-top:1px solid var(--hair);
+  font-size:14.5px;color:var(--mute);
+}
+.x-row:last-child{border-bottom:1px solid var(--hair)}
 
 /* ==========================================================
    EPILOGUE
@@ -303,7 +316,7 @@ footer{padding:60px 0 50px;text-align:center}
 @media(max-width:900px){
   #hero{height:auto}
   .hero-stage{position:relative;height:100svh}
-  .hero-frame{width:100vw;height:100%;aspect-ratio:auto}
+  .hero-frame{height:100svh;max-height:100svh}
   #prologue .grid{grid-template-columns:1fr;gap:52px}
   .t-row{grid-template-columns:1fr;gap:10px;padding:36px 0}
   .beats{grid-template-columns:1fr;gap:38px}
@@ -324,7 +337,7 @@ footer{padding:60px 0 50px;text-align:center}
   .scroll-hint{animation:none}
   #hero{height:auto}
   .hero-stage{position:relative}
-  .hero-frame{width:100vw}
+  .hero-frame{height:100svh;max-height:100svh}
 }
 </style>
 </head>
@@ -340,34 +353,32 @@ footer{padding:60px 0 50px;text-align:center}
    ============================================================ */
 const SITE = {
   hero: {
-    title: [["이야기는"], ["<span class='em'>프레임</span>에서 끝나지 않는다"]],
-    sub: "화면 밖까지 만들어 본 사람 — VFX Producer 양수민",
+    title: [["이 화면이 켜지기까지,"], ["그 <span class='em'>모든 과정</span>이 제 일입니다"]],
+    sub: "기술과 이야기 사이를 잇는 VFX Producer — 양수민",
     credit: "DIRECTOR-TURNED-PRODUCER · VFX R&D · GLOBAL PRODUCTION",
-    media: { file: "assets/hero_loop", poster: "assets/hero_poster.jpg", once: true,
+    media: { file: "assets/hero_loop", once: true, delay: 1500,
              desc: "Hero intro video, plays once then holds on last frame" }
   },
 
   prologue: {
     kicker: "Prologue",
     title: [
-      "스크린을 채우기 전에,",
-      "<span class='em'>사람 사이를</span> 먼저 채운다"
+      "카메라 뒤에서 시작해,",
+      "<span class='em'>현장 전체</span>가 보이는 자리까지"
     ],
     paragraphs: [
       [
-        "연출로 시작해, 화면 안을 만들었다.",
-        "스타트업에서 기획서와 견적서, 타임 테이블과 정산서를",
-        "전부 내 손으로 쓰며 화면 밖을 배웠다."
+        "단편 열 편을 찍으며 화면 안을 배웠고,",
+        "스타트업의 견적서와 정산서로 화면 밖을 배웠다."
       ],
       [
-        "지금은 VFX 스튜디오에서",
-        "현장과 포스트, 그리고 해외 파트너 사이를 잇는다."
+        "지금은 LED 볼륨 앞에서",
+        "촬영팀과 미술팀, VFX와 해외 파트너 사이 —",
+        "서로 다른 다섯 개의 언어를 통역한다."
       ],
       [
-        "서로 다른 언어를 쓰는 팀들 사이에서,",
-        "<b>기술적으로 가능한 것</b>과 <b>이야기에 필요한 것</b>을",
-        "같은 언어로 번역하는 일 —",
-        "그것이 내가 해 온 프로듀싱이다."
+        "연출의 눈, 프로듀서의 손, 개발자의 도구.",
+        "<b>셋 사이를 오가며 일하는 것</b>이 내 방식이다."
       ]
     ],
     media: { file: "assets/prologue_still.jpg", ratio: "r-tall",
@@ -379,8 +390,8 @@ const SITE = {
       kicker: "Chapter One",
       title: ["한 사람의 <span class='em'>크레딧</span>"],
       sub: [
-        "역할은 넓어졌지만, 하는 일은 하나였다.",
-        "이야기가 끝까지 도착하게 만드는 것."
+        "역할은 계속 바뀌었지만,",
+        "이야기를 끝까지 데려가는 일은 같았다."
       ]
     },
     items: [
@@ -390,8 +401,8 @@ const SITE = {
         org: "MOFAC STUDIOS — VFX",
         desc: [
           "대형 IP 프로젝트, 프리비즈부터 포스트비즈까지.",
-          "다섯 개 팀 사이를 오가며 언리얼 기반 워크플로우를 이끌고,",
-          "병목을 발견하면 직접 도구를 만들어 줄인다."
+          "넷플릭스 오픈하우스에서 Eyeline과 ICVFX 단편을 만들었고,",
+          "막히는 공정은 직접 툴을 짜서 뚫는다."
         ],
         tags: ["ICVFX","UNREAL ENGINE","PIPELINE R&D","NETFLIX OPEN HOUSE"]
       },
@@ -400,9 +411,9 @@ const SITE = {
         role: "PD · VFX 총괄",
         org: "PIP — 스타트업 프로덕션 · 창업 원년 멤버",
         desc: [
-          "기획서부터 정산서까지, 제작의 처음과 끝을 내 손으로.",
-          "문화재청, 삼성바이오로직스, 그리고 홍콩 HSBC —",
-          "해외 프로덕션과의 협상 테이블에 직접 앉았다."
+          "창업 멤버로 시작해 기획, 견적, 촬영, 정산까지.",
+          "문화재청, 삼성바이오로직스, 홍콩 HSBC —",
+          "작은 팀일수록 한 사람이 책임지는 반경이 컸다."
         ],
         tags: ["PRODUCING","BUDGET","OVERSEAS NEGOTIATION","POST / VFX"]
       },
@@ -411,9 +422,9 @@ const SITE = {
         role: "단편영화 연출 · 촬영 · PD",
         org: "독립 단편 10편",
         desc: [
-          "연출작 〈행복을 살 수 있는 가게가 있나요?〉",
-          "단편영화제 최우수작품상.",
-          "현재 ICVFX SF 단편 〈시네마토그래프〉 포스트프로덕션 중."
+          "연출, 촬영, PD를 오가며 열 편의 현장을 돌았다.",
+          "〈행복을 살 수 있는 가게가 있나요?〉 최우수작품상.",
+          "지금도 두 편이 포스트 위에 있다."
         ],
         tags: ["DIRECTING","BEST FILM AWARD","ICVFX SHORT"]
       },
@@ -423,7 +434,7 @@ const SITE = {
         org: "서강대학교 · 미디어엔터테인먼트 복수전공",
         desc: [
           "기술과 이야기의 교차점에서 출발했다.",
-          "지금까지의 모든 선택이 이 교차점 위에 있다."
+          "아직 그 교차점 위에 있다."
         ],
         tags: []
       }
@@ -434,8 +445,8 @@ const SITE = {
     kicker: "Chapter Two",
     title: ["세 개의 <span class='em'>현장</span>"],
     sub: [
-      "PD의 역량은 문장이 아니라 현장으로 증명된다.",
-      "상황, 조율, 그리고 결과."
+      "말로 하는 역량은 없다.",
+      "현장에서 있었던 일 세 개."
     ]
   },
 
@@ -448,22 +459,22 @@ const SITE = {
               desc: "LED wall set, wide (real on-set photo)" },
       beats: [
         { label: "Situation", lines: [
-          "Eyeline 본사 VP Supervisor,",
-          "한국의 유명 촬영감독, 촬영팀, 미술팀, 그리고 VP팀.",
-          "넷플릭스 오픈하우스의 ICVFX 단편 현장에는",
-          "최소 다섯 개의 '언어'가 뒤섞여 있었다."
+          "넷플릭스 오픈하우스, ICVFX 단편 촬영장.",
+          "Eyeline 본사 VP Supervisor와 한국 촬영팀,",
+          "미술팀과 VP팀이 한 무대에 섰다.",
+          "같은 장면을 두고 다섯 개의 언어가 오갔다."
         ]},
         { label: "Mediation", lines: [
-          "장면에 맞는 <b>프레임 레이트를 결정</b>하고,",
-          "<b>LED 월과 카메라의 젠록 동기화</b> 사양을 조율했다.",
-          "병목이 생기면 감독님께 직접 찾아가 상황을 설명하고,",
-          "그 딜레이를 쉬는 시간으로 바꿔 현장의 흐름을 지켰다."
+          "프레임 레이트는 연출 의도에서 역산했고,",
+          "LED 월과 카메라의 젠록은 사양으로 정리해 돌렸다.",
+          "병목이 생기면 감독님께 먼저 걸어갔다.",
+          "<b>딜레이를 쉬는 시간으로 바꾸는 것</b>도 조율이다."
         ]},
         { label: "Result", lines: [
-          "단편은 성공적으로 상영됐다.",
-          "행사가 끝난 뒤, 그 Supervisor는",
-          "내 개인 작품에 피드백을 줄 만큼의 사이가 됐다.",
-          "<b>협상 상대를 내 작업의 첫 관객으로 만든 경험.</b>"
+          "단편은 무대에 올랐다.",
+          "그 Supervisor는 지금",
+          "내 개인 작품의 피드백을 주는 사이다.",
+          "<b>협상 상대가 첫 관객이 됐다.</b>"
         ]}
       ],
       subs: [
@@ -479,18 +490,18 @@ const SITE = {
               desc: "HSBC shoot still or location photo" },
       beats: [
         { label: "Situation", lines: [
-          "홍콩 HSBC CF.",
-          "로케이션 헌팅과 예산 협의를",
-          "해외 프로덕션 담당자와 직접 진행해야 했다."
+          "홍콩, HSBC 광고.",
+          "로케이션도 예산도",
+          "현지 프로덕션과 직접 붙어야 했다."
         ]},
         { label: "Mediation", lines: [
-          "상대 프로덕션의 제작 사정과",
-          "복잡한 상관관계를 먼저 파악했다.",
-          "그 위에서 로케이션과 예산의 우선순위를 조정했다."
+          "상대의 스케줄과 사정부터 풀었다.",
+          "협상은 영어 실력이 아니라",
+          "<b>상대의 문제를 누가 먼저 이해하느냐</b>의 게임이었다."
           /* EDIT: add one concrete negotiation episode */
         ]},
         { label: "Result", lines: [
-          "계획된 일정과 예산 안에서 촬영을 완수했다."
+          "일정 안에서, 예산 안에서 촬영을 끝냈다."
           /* EDIT: one-line concrete outcome */
         ]}
       ],
@@ -509,9 +520,9 @@ const SITE = {
       title: ["파이프라인의 <span class='em'>모든 단계</span>에서", "대화할 수 있는 PD"],
       role: "MOFAC STUDIOS · LARGE-SCALE IP PROJECT · PREVIS TO POSTVIS",
       intro: [
-        "대형 IP 프로젝트에 VP를 접목해 전 공정을 진행하며,",
-        "언리얼에 익숙지 않은 VFX팀들을 VP팀이 주도적으로 이끌었다.",
-        "아래 각 단계를 짚어 보라 — 조율한 지점에 빛이 켜진다."
+        "대형 IP 프로젝트를 프리비즈부터 포스트비즈까지 VP로 관통했다.",
+        "언리얼이 낯선 팀들 사이에서 VP팀이 길을 냈다.",
+        "단계를 짚어 보라 — 내가 서 있던 자리에 빛이 켜진다."
       ],
       pipeline: [
         { name: "프리비즈", en: "Previs", title: "PREVIS",
@@ -533,19 +544,18 @@ const SITE = {
   tools: {
     chapter: {
       kicker: "Chapter Three",
-      title: ["필요한 도구가 없으면 만든다,", "그것도 <span class='em'>예산 관리</span>다"],
+      title: ["병목은 회의로 줄지 않는다,", "<span class='em'>도구</span>로 준다"],
       sub: [
-        "AI와 VFX, VP를 엮으면 어느 공정이 얼마나 빨라지고",
-        "예산과 인력이 어디서 줄어드는지 —",
-        "보고서가 아니라 내 손으로 알고 있다."
+        "일정과 예산을 지키는 가장 빠른 방법은",
+        "필요한 도구를 직접 만드는 것이었다."
       ]
     },
     items: [
       {
         name: "SHOT MANAGER",
         what: [
-          "멀티 워크스테이션 VP 촬영 자동화 플러그인.",
-          "여러 대의 촬영 PC를 한 자리에서 지휘한다."
+          "여러 대의 촬영 PC를 한 자리에서 지휘하는",
+          "멀티 워크스테이션 VP 촬영 자동화 플러그인."
         ],
         impact: "VP 촬영 오퍼레이션 시간 <span class='fill'>[N]%</span> 단축",
         media: { file: "assets/tool_shotmanager.jpg", ratio: "r-wide", desc: "Shot Manager UI in Unreal" }
@@ -553,8 +563,8 @@ const SITE = {
       {
         name: "HSYNC",
         what: [
-          "마커리스 핸드 트래킹 시스템.",
-          "장갑도 마커도 없이, 손의 연기를 캐릭터에 옮긴다."
+          "장갑도 마커도 없이,",
+          "카메라 한 대로 손의 연기를 캐릭터에 옮긴다."
         ],
         impact: "핸드 애니메이션 수작업 공정 대체",
         media: { file: "assets/tool_hsync.jpg", ratio: "r-wide", desc: "HSync demo capture" }
@@ -562,17 +572,16 @@ const SITE = {
       {
         name: "KIMODO",
         what: [
-          "텍스트 기반 모션 생성 툴.",
-          "문장 한 줄이 프리비즈의 블로킹이 된다."
+          "문장을 쓰면 캐릭터가 움직인다.",
+          "프리비즈 블로킹을 위한 텍스트-투-모션 툴."
         ],
         impact: "프리비즈 블로킹 속도 <span class='fill'>[N]배</span> 향상",
         media: { file: "assets/tool_kimodo.jpg", ratio: "r-wide", desc: "Kimodo in Sequencer" }
       }
     ],
     quote: [
-      "\u201C새 기술을 소개하는 PD는 많지만,",
-      "그 기술이 실제 프로덕션에서 <b>유효한지 구분할 수 있는 PD</b>는",
-      "많지 않다.\u201D"
+      "\u201C새 기술을 소개하는 사람은 많다.",
+      "프로덕션에서 <b>버티는 기술</b>을 골라내는 사람은 드물다.\u201D"
     ]
   },
 
@@ -581,8 +590,8 @@ const SITE = {
       kicker: "Chapter Four",
       title: ["<span class='em'>연출자</span>의 눈으로"],
       sub: [
-        "프로듀서이기 전에, 이야기를 만들던 사람.",
-        "그 눈이 제작의 모든 판단에 남아 있다."
+        "프로듀서이기 전에 이야기를 만들던 사람.",
+        "그 눈은 지워지지 않는다."
       ]
     },
     items: [
@@ -600,19 +609,27 @@ const SITE = {
       { client: "HSBC Hong Kong", role: "PD · 해외 프로덕션 협상", year: "[YYYY]" },
       { client: "문화재청", role: "PD · VFX", year: "[YYYY]" },
       { client: "삼성바이오로직스", role: "PD · VFX", year: "[YYYY]" }
-    ]
+    ],
+    extras: {
+      head: "Off the Record",
+      items: [
+        "AI·VFX 기술 동향을 상시 추적하고 직접 돌려본다 — 팀의 R&D 지도를 만들어 운영 중",
+        "방송·영상 기술 컨퍼런스를 다니고, 다녀오면 리포트를 쓴다",
+        "AI 단편 \u3008채집자\u3009로 생성형 파이프라인을 실전 검증 중",
+        "그림을 그리는 애니메이션 팬 — 화면을 보는 눈은 취미에서도 자란다"
+      ]
+    }
   },
 
   epilogue: {
     kicker: "Epilogue",
     title: [
-      "세 면을 채우는 가장 효율적인 방향을,",
-      "<span class='em'>현장의 언어</span>로"
+      "다음 화면이 켜질 때,",
+      "그 뒤에 <span class='em'>서 있겠습니다</span>"
     ],
     sub: [
-      "화면의 경계를 직접 다뤄 보고,",
-      "현장의 다섯 팀 사이를 뛰어 본 사람의 언어로 —",
-      "다음 이야기를 함께 확장할 준비가 되어 있다."
+      "화면의 경계를 넓히는 포맷에는",
+      "경계 밖을 다뤄 본 사람이 필요하다."
     ],
     cta: { label: "GET IN TOUCH", href: "mailto:gongdeul808808@naver.com" },
     footer: "YANG SUMIN · PRODUCER BEYOND THE FRAME · 2026"
@@ -628,8 +645,9 @@ function slot(m){
   var ratio = m.ratio ? " " + m.ratio : "";
   var poster = m.poster ? " data-poster='" + m.poster + "'" : "";
   var once = m.once ? " data-once='1'" : "";
+  var delay = m.delay ? " data-delay='" + m.delay + "'" : "";
   var kind = m.file.match(/\.(jpg|jpeg|png|webp|avif)$/i) ? "img" : "video";
-  return "<div class='slot" + ratio + "' data-kind='" + kind + "' data-file='" + m.file + "'" + poster + once +
+  return "<div class='slot" + ratio + "' data-kind='" + kind + "' data-file='" + m.file + "'" + poster + once + delay +
          " data-desc=\"" + (m.desc || "") + "\"></div>";
 }
 function chapter(c){
@@ -756,6 +774,10 @@ function render(){
           "<span class='c-year'><span class='fill'>" + c.year + "</span></span>" +
         "</div>").join("") +
     "</div>" +
+    (SITE.films.extras ?
+      "<div class='comm rv'><div class='c-head'>" + SITE.films.extras.head + "</div>" +
+        SITE.films.extras.items.map(x => "<div class='x-row'>" + x + "</div>").join("") +
+      "</div>" : "") +
   "</div></section>";
 
   /* EPILOGUE */
@@ -794,8 +816,9 @@ render();
       img.src = file;
     }else{
       var v = document.createElement("video");
+      var delay = parseInt(el.getAttribute("data-delay") || "0", 10);
       v.muted = true; v.setAttribute("muted","");
-      v.autoplay = true; v.setAttribute("autoplay","");
+      if(!delay){ v.autoplay = true; v.setAttribute("autoplay",""); }
       v.loop = !el.getAttribute("data-once");
       v.playsInline = true; v.setAttribute("playsinline","");
       v.preload = el.getAttribute("data-once") ? "auto" : "metadata";
@@ -808,16 +831,22 @@ render();
       s1.onerror = fail; s2.onerror = fail;
       v.appendChild(s1); v.appendChild(s2);
       el.appendChild(v);
+      var armed = delay === 0;
       function tryPlay(){
+        if(!armed) return;
         var p = v.play();
         if(p && p.catch){ p.catch(function(){}); }
       }
       v.addEventListener("loadeddata", tryPlay);
-      tryPlay();
+      if(delay){
+        setTimeout(function(){ armed = true; tryPlay(); }, delay);
+      } else {
+        tryPlay();
+      }
       /* autoplay-policy fallback: start on first user interaction */
       ["pointerdown","touchstart","keydown","scroll"].forEach(function(ev){
-        addEventListener(ev, function once(){
-          if(v.paused && !v.ended){ tryPlay(); }
+        addEventListener(ev, function(){
+          if(armed && v.paused && !v.ended){ tryPlay(); }
         }, {once:true, passive:true});
       });
     }
@@ -835,7 +864,9 @@ render();
 })();
 
 /* ============================================================
-   HERO EXPANDING FRAME (ScreenX homage)
+   HERO LETTERBOX REVEAL (ScreenX homage)
+   full-bleed video letterboxed at 2.39:1; scrolling opens the
+   black bars until the frame fills the viewport.
    ============================================================ */
 (function(){
   var reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -849,12 +880,8 @@ render();
     var total = hero.offsetHeight - innerHeight;
     var p = Math.min(1, Math.max(0, -hero.getBoundingClientRect().top / total));
     var e = 1 - Math.pow(1 - p, 3);
-    var w0 = Math.min(innerWidth * 0.56, 860);
-    frame.style.width = (w0 + (innerWidth - w0) * e) + "px";
-    frame.style.boxShadow =
-      "0 0 0 1px rgba(228,164,74," + (0.16 * (1 - e)) + ")," +
-      "0 0 " + (100 + e * 140) + "px rgba(228,164,74," + (0.09 + e * 0.09) + ")," +
-      "0 40px 120px rgba(0,0,0,.65)";
+    var h0 = Math.min(innerWidth / 2.39, innerHeight);
+    frame.style.height = (h0 + (innerHeight - h0) * e) + "px";
   }
   addEventListener("scroll", function(){
     if(!ticking){ ticking = true; requestAnimationFrame(update); }
@@ -864,18 +891,30 @@ render();
 })();
 
 /* ============================================================
-   HERO COPY SYNC — title appears when the LED light-up ends.
+   HERO INTRO SEQUENCE — scroll is locked until the light-up
+   video ends and the title appears; then scroll unlocks and
+   the SCROLL hint fades in.
    Fallbacks: reduced motion, missing video, or 9s safety timer.
    ============================================================ */
 (function(){
   var copy = document.querySelector(".hero-copy");
   var slotEl = document.querySelector("#heroFrame .slot");
+  var hint = document.querySelector(".scroll-hint");
   if(!copy) return;
   var done = false;
-  function reveal(){ if(done) return; done = true; copy.classList.add("lit"); }
+  function reveal(){
+    if(done) return; done = true;
+    copy.classList.add("lit");
+    document.documentElement.classList.remove("locked");
+    if(hint){ setTimeout(function(){ hint.classList.add("show"); }, 900); }
+  }
   if(matchMedia("(prefers-reduced-motion: reduce)").matches){ reveal(); return; }
   var v = slotEl ? slotEl.querySelector("video") : null;
   if(!v){ reveal(); return; }
+  /* lock the page for the intro */
+  if("scrollRestoration" in history){ history.scrollRestoration = "manual"; }
+  scrollTo(0, 0);
+  document.documentElement.classList.add("locked");
   v.addEventListener("ended", reveal);
   /* placeholder replaced the video (file missing) -> show copy */
   setTimeout(function(){ if(!slotEl.contains(v)) reveal(); }, 1600);
