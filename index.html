@@ -869,7 +869,7 @@ const SITE = {
           { youtube: "https://drive.google.com/file/d/1BcnZAqzHEH0sg5hdF58u-m-qGiHX8J3q/view?usp=sharing", title: "[삼성 바이오로직스] INTRO", role: "모션그래픽 외주 전반"},
           { youtube: "https://youtu.be/cQEg-qF_TX8", title: "[라이엇 게임즈] 유교 홍보 영상", role: "PD · POST 전반"},
           { youtube: "https://youtu.be/5mIGHalCebk", title: "[초단편영화 수상작] 그저 너는 내게 __이다", role: "감독"},
-          { youtube: "https://youtu.be/mf8Hl4No6iY?si=UBAZ6U99AMSX8Ue-", title: "[한국콘텐츠진흥원 다빈치임팩트] 심해", role: "감독"},
+          { youtube: "https://youtu.be/kPLybBctUmg", title: "[한국콘텐츠진흥원 다빈치임팩트] 심해", role: "감독"},
           { youtube: "https://youtu.be/WbWn2AZtatQ?si=Kk6s_EDE-PiAWSkm", title: "[한국콘텐츠진흥원 다빈치임팩트] 심해'", role: "감독"}
         ]
       }
@@ -1519,14 +1519,11 @@ render();
           var img = new Image();
           img.onload = function(){ res({src: jpg, kind: "img"}); };
           img.onerror = function(){
-            /* no jpg -> try mp4 */
+            /* no jpg -> try mp4 (HEAD request: mobile-safe, no media preload) */
             var mp4 = prefix + n + ".mp4";
-            var v = document.createElement("video");
-            v.onloadeddata = function(){ res({src: mp4, kind: "video"}); };
-            v.onerror = function(){ res(null); };
-            v.preload = "auto";
-            v.muted = true;
-            v.src = mp4;
+            fetch(mp4, { method: "HEAD" })
+              .then(function(r){ res(r.ok ? {src: mp4, kind: "video"} : null); })
+              .catch(function(){ res(null); });
           };
           img.src = jpg;
         }));
@@ -1541,10 +1538,22 @@ render();
       }
       track.innerHTML = found.map(function(f){
         if(f.kind === "video"){
-          return "<div class='cg-frame'><video src='" + f.src + "' muted autoplay loop playsinline></video></div>";
+          return "<div class='cg-frame'><video src='" + f.src + "' muted autoplay loop playsinline preload='metadata'></video></div>";
         }
         return "<div class='cg-frame'><img src='" + f.src + "' alt=''></div>";
       }).join("");
+      /* mobile: muted attr via innerHTML is unreliable -> set properties + kick playback */
+      var vids = track.querySelectorAll("video");
+      function kick(){
+        vids.forEach(function(v){
+          v.muted = true; v.playsInline = true; v.loop = true;
+          var pr = v.play(); if(pr && pr.catch){ pr.catch(function(){}); }
+        });
+      }
+      kick();
+      ["touchstart","pointerdown","scroll"].forEach(function(ev){
+        addEventListener(ev, kick, {once:true, passive:true});
+      });
       if(found.length < 2){ return; }
 
       var dots = document.createElement("div");
@@ -1616,6 +1625,11 @@ var LBC = LB.querySelector(".lb-content");
 function lbOpen(html){
   LBC.innerHTML = html;
   LB.classList.add("open");
+  var v = LBC.querySelector("video");
+  if(v){
+    v.muted = true; v.playsInline = true;
+    var pr = v.play(); if(pr && pr.catch){ pr.catch(function(){}); }
+  }
 }
 function lbClose(){
   LB.classList.remove("open");
