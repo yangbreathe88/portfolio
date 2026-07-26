@@ -320,6 +320,17 @@ html{scroll-behavior:smooth}
   scroll-snap-align:start;
 }
 .work-card .slot{margin-bottom:14px}
+.drive-card{border:0;padding:0;cursor:pointer;width:100%;display:block}
+.drive-card img{width:100%;height:100%;object-fit:cover;display:block}
+.play-badge{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:54px;height:38px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(10,8,7,.78);color:#fff;font-size:15px;
+  border:1px solid rgba(228,164,74,.4);
+  transition:background .3s var(--ease);pointer-events:none;
+}
+.drive-card:hover .play-badge{background:rgba(228,164,74,.85);color:#0A0807}
 .w-title{font-size:15.5px;font-weight:650}
 .w-role{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--amber);margin-top:5px;text-transform:uppercase}
 .w-note{font-size:13px;color:var(--mute);margin-top:7px;line-height:1.8}
@@ -442,9 +453,11 @@ html{scroll-behavior:smooth}
 #tools{padding:30px 0 150px}
 .tool-list{border-top:1px solid var(--hair)}
 .tool-row{
-  display:grid;grid-template-columns:1fr 340px;gap:56px;align-items:center;
+  display:grid;grid-template-columns:1fr 520px;gap:56px;align-items:center;
   padding:52px 0;border-bottom:1px solid var(--hair);
 }
+.tool-row .slot{cursor:zoom-in}
+@media(max-width:1100px){ .tool-row{grid-template-columns:1fr 400px} }
 .tool-row h4{font-family:var(--mono);font-size:14px;letter-spacing:.22em;color:var(--amber-hi)}
 .tool-row .t-what{margin-top:14px;font-size:15.5px;color:var(--mute);max-width:52ch;line-height:2}
 .tool-row .t-impact{
@@ -519,6 +532,30 @@ html{scroll-behavior:smooth}
   text-align:center;margin-bottom:56px;
   font-family:var(--mono);font-size:11px;letter-spacing:.34em;
   color:var(--amber);text-transform:uppercase;
+}
+
+/* ==========================================================
+   LIGHTBOX — click media to view large; click/Esc closes
+   ========================================================== */
+#lightbox{
+  position:fixed;inset:0;z-index:100;
+  display:none;align-items:center;justify-content:center;
+  background:rgba(5,4,3,.92);padding:4vh 4vw;cursor:zoom-out;
+}
+#lightbox.open{display:flex}
+#lightbox .lb-content{max-width:92vw;max-height:92vh;display:flex}
+#lightbox img,#lightbox video{
+  max-width:92vw;max-height:88vh;width:auto;height:auto;
+  box-shadow:0 0 90px rgba(0,0,0,.8);
+}
+#lightbox iframe{
+  width:min(1200px,92vw);aspect-ratio:16/9;border:0;
+  box-shadow:0 0 90px rgba(0,0,0,.8);background:#000;
+}
+.lb-hint{
+  position:fixed;top:20px;right:26px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.24em;
+  color:var(--faint);
 }
 
 /* ==========================================================
@@ -979,6 +1016,10 @@ const SITE = {
    RENDERER — turns SITE data into DOM.
    lines(arr) joins line arrays with breath-preserving spans.
    ============================================================ */
+function driveId(v){
+  var d = String(v).match(/drive\.google\.com\/file\/d\/([^\/?]+)/);
+  return d ? d[1] : null;
+}
 function embedSrc(v){
   /* accepts: raw youtube id, youtu.be / youtube.com URLs, Google Drive share URLs */
   v = String(v).trim();
@@ -1153,7 +1194,12 @@ function render(){
           "<div class='works-track'>" +
             c.works.items.map(w =>
               "<div class='work-card'>" +
-                (w.youtube ?
+                (w.youtube && driveId(w.youtube) ?
+                  "<button class='slot r-wide drive-card' data-drive='" + driveId(w.youtube) + "'>" +
+                    "<img src='https://drive.google.com/thumbnail?id=" + driveId(w.youtube) + "&sz=w1200' alt='' loading='lazy'>" +
+                    "<span class='play-badge'>&#9654;</span>" +
+                  "</button>" :
+                 w.youtube ?
                   "<div class='slot r-wide'><iframe src='" + embedSrc(w.youtube) + "' title='" + esc(w.title) + "' loading='lazy' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' allowfullscreen></iframe></div>" :
                   "<div class='slot r-wide'><div class='ph'><div class='fname'>youtube id</div><div class='fdesc'>add the video id in SITE data</div></div></div>") +
                 "<div class='w-title'>" + esc(w.title) + "</div>" +
@@ -1263,12 +1309,16 @@ render();
       v.preload = el.getAttribute("data-once") ? "auto" : "metadata";
       var poster = el.getAttribute("data-poster");
       if(poster){ v.poster = poster; }
-      var s1 = document.createElement("source"); s1.src = file + ".webm"; s1.type = "video/webm";
-      var s2 = document.createElement("source"); s2.src = file + ".mp4";  s2.type = "video/mp4";
+      if(/\.(mp4|webm|mov)$/i.test(file)){
+        var s1 = document.createElement("source"); s1.src = file;
+      } else {
+        var s1 = document.createElement("source"); s1.src = file + ".webm"; s1.type = "video/webm";
+        var s2 = document.createElement("source"); s2.src = file + ".mp4";  s2.type = "video/mp4";
+      }
       var fails = 0;
       function fail(){ fails++; if(fails >= 2){ ph(file + ".mp4"); } }
       s1.onerror = fail; s2.onerror = fail;
-      v.appendChild(s1); v.appendChild(s2);
+      v.appendChild(s1); if(typeof s2 !== "undefined" && s2){ v.appendChild(s2); }
       el.appendChild(v);
       var armed = delay === 0;
       function tryPlay(){
@@ -1549,6 +1599,50 @@ render();
         var dir = parseInt(btn.getAttribute("data-dir"), 10);
         track.scrollBy({ left: dir * track.clientWidth, behavior: "smooth" });
       });
+    });
+  });
+})();
+
+/* ============================================================
+   LIGHTBOX
+   ============================================================ */
+var LB = document.createElement("div");
+LB.id = "lightbox";
+LB.innerHTML = "<div class='lb-content'></div><div class='lb-hint'>CLICK / ESC TO CLOSE</div>";
+document.body.appendChild(LB);
+var LBC = LB.querySelector(".lb-content");
+function lbOpen(html){
+  LBC.innerHTML = html;
+  LB.classList.add("open");
+}
+function lbClose(){
+  LB.classList.remove("open");
+  LBC.innerHTML = "";
+}
+LB.addEventListener("click", lbClose);
+addEventListener("keydown", function(e){ if(e.key === "Escape") lbClose(); });
+
+/* drive works cards: click opens the player large */
+(function(){
+  document.querySelectorAll(".drive-card").forEach(function(b){
+    b.addEventListener("click", function(){
+      lbOpen("<iframe src='https://drive.google.com/file/d/" + b.getAttribute("data-drive") + "/preview' allow='autoplay' allowfullscreen></iframe>");
+    });
+  });
+})();
+
+/* tool media: click to enlarge */
+(function(){
+  document.querySelectorAll("#tools .slot").forEach(function(sl){
+    sl.addEventListener("click", function(){
+      var v = sl.querySelector("video");
+      var im = sl.querySelector("img");
+      if(v){
+        var src = v.currentSrc || (v.querySelector("source") && v.querySelector("source").src) || "";
+        lbOpen("<video src='" + src + "' autoplay muted loop playsinline controls></video>");
+      } else if(im){
+        lbOpen("<img src='" + im.src + "' alt=''>");
+      }
     });
   });
 })();
